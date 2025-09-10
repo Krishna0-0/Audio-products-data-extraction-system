@@ -8,12 +8,20 @@ import json
 import ast
 from bs4 import BeautifulSoup
 import google.generativeai as genai
+import os
+from dotenv import load_dotenv
 
-keys = ["AIzaSyBiECn9JR0wMuujNrYCBadYPykKJGk5asA"]
+# Load environment variables
+load_dotenv()
+
+keys = os.getenv('GEMINI_API_KEYS', '').split(',')
+if not keys or keys == ['']:
+    raise ValueError("GEMINI_API_KEYS environment variable not set")
+
 model1 = genai.GenerativeModel('gemini-2.5-pro',generation_config={"response_mime_type": "application/json"})
 genai.configure(api_key=random.choice(keys))
 
-search_engine = [['24e195608ec9d46c4','AIzaSyBg_4XdTYAdMcGv1JY48vdBRZk38rvbXo4']]
+search_engine = [[os.getenv('SEARCH_ENGINE_ID') ,os.getenv('GOOGLE_API_KEY')]]
 # search_query = 'Realme buds Air 6'
 
 custom_headers = {
@@ -21,7 +29,7 @@ custom_headers = {
     'Pragma': 'no-cache',
      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
      'Accept-Language': 'en-US,en;q=0.9,hi-IN;q=0.8,hi;q=0.7',
-     'Cookie' : 'session-id=262-2285634-7972431; ext_name=ojplmecpdpgccookcobabopnaifgidhf; ubid-acbin=257-7270922-3650353; sst-acbin=Sst1|PQHCWI7g-LDVDmqDvpu22jgwCaat0JNUCIziIY-CWwZJOb1VW1ohyKy2eQNMcXqWv2n2o8RRg7Lmf32trfaAQf4_bP_vWYUYXfUovffPELlZMGnitQhV9bvUo86MNbJSCqEF6fTw53W62hp73uQn6N_ICegtWMajIbd9BwNThgZoevyIK1Ebs4fxoBavdxzgZNq55P6AwBxLc5eLCA9kr3VZCnN20MNF2GFVPmbn-zdLo5-YPgUJwAaqd7_OljrrxakQOjjuMVSBwjp8JZPth4wHJTKnG3RoOvyil6lSkAtm1jU; i18n-prefs=INR; x-acbin="uP6k4bXI43te7Aqqs9KJ@Kr@Nd6YHOB6r46gjrb4BTmcvMI0VlNnbire2vU20Xrj"; at-acbin=Atza|IwEBIC1fa8cHeixuVNdOnMzb2O0HN-HsVOG71lKSvlcfNEdS79w1_OppSh8iDDcVe_hEcO8PPubz34bonoPOFKvxJGXgukb4hVID_jwxcBAKa6VKzWN6Ts9W9ZUdzGbOrC4dCuch5GS4-wzeP7eRA5I5PrjU3aDjJUFbrseVnGKlNCZEwcHSDoQje2yZ0hfV2ut10ny9Qa7flaj_FX14ZPHjX6nOf7vWzAwNlJLlZB9YUK0IdA; sess-at-acbin="LBk6SHR+gV4m5Ly83tUVvOyOJpI1fEOzdN7OHPQShcA="; lc-acbin=en_IN; csd-key=eyJ3YXNtVGVzdGVkIjp0cnVlLCJ3YXNtQ29tcGF0aWJsZSI6dHJ1ZSwid2ViQ3J5cHRvVGVzdGVkIjpmYWxzZSwidiI6MSwia2lkIjoiOGRiNjYyIiwia2V5IjoiWHQyM3I1YmdtbFhTYWZLWEF0UGovTjA0d3N6bTM2VmlKeFpPTjIxbC8rb0g2Y2JDYXFhejZpdGFjRUZoOVlkS3dXaU45RjR3aVhiRjU2Y3Y2MXVheXY3RjdpalFmQU93RUwxQ1R6ZkRvYzV0Y2Ntcnp4eEtZMFRvWDE0dXVZdHNOLy9GcGxJNDdQTHUzdE5nNHcrUE9aWGYybjgxMmIvaVAvY25EQXlKQlR5NUNUMUN0ekpsTFRUTWxrN3NCdzBWR0Urckp6dE1YaEQvQmY0aFNlSy96ZWNVY2JERklSQ0ZTc2plY21vQ0NUWW9yM2JEYlpLeFdRWlp4U3puZEVPYTZuRnFZUGtuTmRIT0RiZlI0ZHZtZ0ZXaWRtdmxsOWg1WWMrRVNsV0lJc3FENEJrRHlDc3JmaWErbDQ5VE83d1FuV0N0cXAxRkcxanZQRFE3RWxoWEN3PT0ifQ==; session-id-time=2082787201l; session-token=CNrn9/uaH9nqrH3iG34cCuHgZQ4QW0qavYpcbyA4hKruMAVoadXV96JNch7Yh8oIJ8ZbejiY4j/FL5NaEPUaoWFzMGFDVs8wWxHz/N5e0orKLZgrmzqOtWzNgu9MJVnaOLKvw1cZP6DWQlD/f3zaVcwFVN3fmU4g0V4facp94H0gUWh7mNbRwsb5Q2ILF3cv6CQmaerM9mQmFTNyUVQ4MQzgF0oIIBaf78FlOddm383wJzcQB3PmwVY7+3ezqXyN1viAX+Neg31vusd800bkBcZwKjVcb6f8Pyv8mRMNm2ZIudC/zEUuVJSfhPF2ei4F0x3gOnjunvMK8iwjH83uRD1gmH47WRhuxlgXb1XCVgro/B2yaCui3Di21KNy29+g; csm-hit=TQ93GC9S3DNA00SGRBNE+s-EKGMRA3KNCKKXY2P9QPX|1723495626933',
+     'Cookie': os.getenv('AMAZON_COOKIE', ''),
      "X-Amzn-Trace-Id": "Root=1-66ba761c-23a18c3915856d8c122d2adb",   
 }
 
@@ -54,8 +62,8 @@ def search_on_site(site, query):
     
     return []
 
-filexl = 'data1.xlsx'
-log_file = 'logfile.txt'
+filexl = os.getenv('EXCEL_FILE', 'data1.xlsx')
+log_file = os.getenv('LOG_FILE', 'logfile.txt')
 df = pd.read_excel(filexl)
 # Get the first row (index 0) as a dictionary
 first_row = df.iloc[0].to_dict()
